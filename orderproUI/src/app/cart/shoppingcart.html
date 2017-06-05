@@ -1,0 +1,321 @@
+<body ng-controller="cartController as ctrl">
+<p class="text-info text-center">
+	Thanks for shopping at the Product Store.<br />
+
+</p>
+<form name="checkout.form" class="checkout"  ng-submit="submit_form()" >
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span8">
+
+				<!-- items -->
+				<table class="table table-bordered">
+
+					<!-- header -->
+					<tr class="well">
+						<td><b>Item</b></td>
+						<td class="tdCenter"><b>Quantity</b></td>
+						<td class="tdRight"><b>Price</b></td>
+						<td />
+					</tr>
+
+					<!-- empty cart message -->
+					<tr ng-hide="cart.getTotalCount() > 0" >
+						<td class="tdCenter" colspan="4">
+							Your cart is empty.
+						</td>
+					</tr>
+
+					<!-- cart items -->
+					<tr ng-repeat="item in cart.items | orderBy:'name'">
+						<td>{{item.name}}</td>
+						<td class="tdCenter">
+							<div class="input-append">
+								<input
+								class="span3 text-center" type="tel" 
+								ng-model="item.quantity" 
+								ng-change="cart.saveItems()" />
+								<button 
+								class="btn btn-success" type="button" 
+								ng-disabled="item.quantity >= 1000"
+								ng-click="cart.addItem(item.sku, item.name, item.price, +1)">+</button>
+								<button 
+								class="btn btn-inverse" type="button" 
+								ng-disabled="item.quantity <= 0"
+								ng-click="cart.addItem(item.sku, item.name, item.price, -1)">-</button>
+							</div>
+						</td>
+						<td class="tdRight">{{item.price * item.quantity | currency}}</td>
+						<td class="tdCenter" title="remove from cart">
+							<a href="" ng-click="cart.addItem(item.sku, item.name, item.price, -10000000)" >
+								<i class="icon-remove" />
+							</a>
+						</td>
+					</tr>
+
+					<!-- footer -->
+					<tr class="well">
+						<td><b>Total</b></td>
+						<td class="tdCenter"><b>{{cart.getTotalCount()}}</b></td>
+						<td class="tdRight"><b>{{cart.getTotalPrice() | currency}}</b></td>
+						<td />
+					</tr>
+				</table>
+			</div>
+
+			<!-- buttons -->
+			<div class="span4">
+				<p class="text-info">
+					<button 
+					class="btn btn-block" 
+					onclick="window.location.href='#!'">
+					<i class="icon-chevron-left" /> back to store
+				</button>
+				<button 
+				class="btn btn-block btn-danger" 
+				ng-click="cart.clearItems()" 
+				ng-disabled="cart.getTotalCount() < 1" >
+				<i class="icon-trash icon-white" /> clear cart
+			</button>
+		</p>
+
+		<br /><br/>
+
+	</div>
+
+	<div class="span8" ng-hide="cart.getTotalCount() <= 0">
+		<div class="jumbotron">
+			<!-- User Row 1 -->
+			<legend class="col-md-12 text-center ">Shipping Address</legend>
+			<div class="row">
+				<div class="form-group col-md-4" ng-class="{ 'has-error' : checkout.form.firstname.$invalid && checkout.form.firstname.$touched }">
+					<label>First Name <span class="required">*</span> </label>
+
+					<div>
+						<input type="text" name="firstname" class="form-control"  ng-model="checkout.customer.firstname"  id="checkoutfirstname" required="true" aria.required="true" placeholder="First Name" >
+						<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+					</div> 
+					<div class ="messages" ng-messages="checkout.form.firstname.$error" ng-if="checkout.form.firstname.$touched">
+						<div ng-message="required">First Name  is required</div>
+					</div> 
+				</div>
+				<div class=" form-group col-md-4">
+					<label>Middle Name </label>
+
+					<div>
+						<input type="text" class="form-control" name="middlename" ng-model="checkout.customer.middlename" id="middle-name" placeholder="Middle name" class="input-xlarge" required="true">
+					</div>  
+				</div>
+				<div i class=" form-group col-md-4" ng-class="{ 'has-error' : checkout.lastname.$invalid && checkout.lastname.$touched }">
+					<label>Last Name <span class="required">*</span> </label>
+
+					<div>
+						<input type="text" class="form-control" name="lastname" ng-model="checkout.customer.lastname" id="last-name" placeholder="Last name" class="input-xlarge" required="true">
+						<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+					</div>  
+					<div ng-messages="checkout.lastname.$error" ng-show="checkout.lastname.$touched">
+						<div ng-message="required">Last Name  is required</div>
+					</div> 
+				</div>
+
+			</div>
+			<div class="row">
+				<div  class=" form-group col-md-4" ng-class="{ 'has-error' : checkout.email.$invalid && checkout.email.$touched }">
+					<label>Email <span class="required">*</span> </label>
+
+					<div>
+						<input type="text" class="form-control" name="email" id="email" ng-model="checkout.customer.email" placeholder="Email Address" class="input-xlarge" required="true">
+						<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+					</div>
+					<div ng-messages="checkout.email.$error" ng-show="checkout.email.$touched">
+						<div ng-message="required">Email is required</div>
+					</div>  
+				</div>
+				<div  class=" form-group col-md-4" ng-class="{ 'has-error' : checkout.addessline1.$invalid && checkout.addessline1.$touched }">
+					<label>Address Line 1 <span class="required">*</span> </label>
+
+					<div>
+						<input type="text" class="form-control" name="addessline1" id="addessline1" placeholder="addessline1" ng-model ="checkout.address.addressline1" class="input-xlarge" required="true">
+						<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+					</div>  
+					<div ng-messages="checkout.addessline1.$error" ng-show="checkout.addessline1.$touched">
+						<div ng-message="required">Address is required</div>
+					</div>  
+				</div>
+				<div class=" form-group col-md-4">
+					<label>Address Line 2</label>
+
+					<div>
+						<input type="text" class="form-control" name="addessline2" id="addessline2" placeholder="Addessline 2" ng-model="checkout.address.addressline2" class="input-xlarge" required="true">
+					</div>  
+				</div>
+
+
+			</div>
+			<div class="row">
+
+				<div  class=" form-group col-md-4" ng-class="{ 'has-error' : checkout.city.$invalid && checkout.city.$touched }">
+					<label>City <span class="required">*</span> </label>
+
+					<div>
+						<input type="text" class="form-control" name="city" id="city" placeholder="City" class="input-xlarge" required="true" ng-model="checkout.address.city">
+						<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+					</div> 
+					<div ng-messages="checkout.city.$error" ng-show="checkout.city.$touched">
+						<div ng-message="required">City is required</div>
+					</div>  
+				</div>
+				<div  class=" form-group col-md-4" ng-class="{ 'has-error' : checkout.country.$invalid && checkout.country.$touched }">
+					<label> Country<span class="required">*</span> </label>
+					<select id="country" class="form-control" name="country" required="true" placeholder="Country" ng-model="checkout.address.country"> 
+						<option value="select">Select</option>
+						<option value="CAN">Canada</option>
+						<option value="US">United States</option>               
+
+					</select>
+					<div ng-messages="checkout.country.$error" ng-show="checkout.country.$touched">
+						<div ng-message="required">Country is required</div>
+					</div> 
+
+				</div>
+				<div  class=" form-group col-md-4" ng-class="{ 'has-error' : checkout.state.$invalid && checkout.state.$touched }">
+					<label>Province/State<span class="required">*</span> </label>
+
+					<div>
+						<input type="text" class="form-control" name="state" id="state" placeholder="state" class="input-xlarge" ng-model="checkout.address.state" required="true">
+						<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+					</div> 
+					<div ng-messages="checkout.state.$error" ng-show="checkout.state.$touched">
+						<div ng-message="required">State is required</div>
+					</div> 
+				</div>
+
+
+			</div>
+			<div class="row">
+				<div  class=" form-group col-md-4" ng-class="{ 'has-error' : checkout.zipcode.$invalid && checkout.zipcode.$touched }">
+					<label>ZipCode <span class="required">*</span> </label>
+
+					<div>
+						<input type="text" class="form-control" name="zipcode" id="zipcode" placeholder="zipcode" class="input-xlarge" ng-model="checkout.address.zipcode" required="true">
+						<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+					</div> 
+					<div ng-messages="checkout.zipcode.$error" ng-show="checkout.zipcode.$touched">
+						<div ng-message="required">ZipCode is required</div>
+					</div> 
+				</div>              
+
+			</div>
+		</div>
+
+	</div>
+	<div class="span8" ng-hide="cart.getTotalCount() <= 0">
+		<div class="jumbotron">
+			<!-- User Row 1 -->
+			<legend class="col-md-12 text-center">Payment Details</legend>
+
+			<div class="row">
+				<div  class=" form-group col-md-4" ng-class="{ 'has-error' : checkout.cardholdersname.$invalid && checkout.cardholdersname.$touched }">
+					<label>Card Holder's Name<span class="required">*</span> </label>
+
+					<div>
+						<input type="text" class="form-control"  name="cardholdersname" id="cardholdersname" ng-model="checkout.card.name" placeholder="Card Holder's Name" class="input-xlarge" required="true">
+						<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+					</div> 
+					<div ng-messages="checkout.cardholdersname.$error" ng-show="checkout.cardholdersname.$touched">
+						<div ng-message="required">Card Holder's Name is required</div>
+					</div> 
+				</div>
+			</div>
+
+			<div class="row">
+				<div  class=" form-group col-md-4" ng-class="{ 'has-error' : checkout.cardnumber.$invalid && checkout.cardnumber.$touched }">
+					<label>Card Number<span class="required">*</span> </label>
+
+					<div>
+						<input type="text" class="form-control" name="cardnumber" id="cardnumber" placeholder="Card Number" ng-model="checkout.card.number" class="input-xlarge" required="true" maxlength="16">
+						<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+					</div> 
+					<div ng-messages="checkout.cardnumber.$error" ng-show="checkout.cardnumber.$touched">
+						<div ng-message="required">Card number is required</div>
+					</div> 
+				</div>
+			</div>   
+
+			<div class="row">
+
+				<div class=" form-group col-md-4" ng-class="{ 'has-error' : checkout.expiryYear.$invalid && checkout.expiryYear.$touched }">
+					<label>Year<span class="required">*</span> </label>
+					<select id="year" class="form-control" name="expiryYear" required="true" placeholder="Select" ng-model="checkout.card.expyear"> 
+						<option value="select">Select</option>
+						<option value="2017">2017</option>
+						<option value="2018">2018</option>
+						<option value="2019">2019</option>
+						<option value="2020">2020</option>  
+						<option value="2021">2021</option>
+						<option value="2022">2022</option>  
+						<option value="2023">2023</option>
+						<option value="2024">2024</option>  
+						<option value="2025">2025</option>
+						<option value="2026">2026</option>                  
+
+					</select>
+					<div ng-messages="checkout.expiryYear.$error" ng-show="checkout.expiryYear.$touched">
+						<div ng-message="required">Card expiry year is required</div>
+					</div>
+				</div>
+				<div  class=" form-group col-md-4" ng-class="{ 'has-error' : checkout.expiryMonth.$invalid && checkout.expiryMonth.$touched }">
+					<label>Month<span class="required">*</span> </label>
+					<select id="month" class="form-control" name="expiryMonth" required="true" placeholder="Select" ng-model="checkout.card.expmonth"> 
+						<option value="select">Select</option>
+						<option value="JAN">January</option>
+						<option value="FEB">Feburary</option>
+						<option value="MAR">March</option>
+						<option value="APR">April</option>  
+						<option value="MAY">May</option>
+						<option value="JUN">June</option>   
+						<option value="JUL">July</option>
+						<option value="AUG">August</option>
+						<option value="SEPT">September</option>
+						<option value="OCT">October</option>
+						<option value="NOV">November</option>
+						<option value="DEC">December</option>
+					</select>
+					<div ng-messages="checkout.expiryMonth.$error" ng-show="checkout.expiryMonth.$touched">
+						<div ng-message="required">Card expiry month is required</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div id="name-group" class=" form-group col-md-4" ng-class="{ 'has-error' : checkout.cardCvv.$invalid && checkout.cardCvv.$touched }">
+					<label>CVV<span class="required">*</span> </label>
+
+					<div>
+						<input type="text" class="form-control" name="cardCvv" id="cvv" ng-model="checkout.card.cvv" placeholder="CVV" class="input-xlarge" required="true" maxlength="3">
+						<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+					</div> 
+						<div ng-messages="checkout.cardCvv.$error" ng-show="checkout.cardCvv.$touched">
+						<div ng-message="required">CVV number is required</div>
+					</div>
+
+				</div>
+			</div>  
+		</div> 
+
+	</div>  
+
+	<div class="span4" ng-hide="cart.getTotalCount() < 1 ">
+		<p class="text-info">
+			<button 
+			class="btn btn-block btn-primary"  ng-disabled="checkout.$invalid"
+			>
+			<i class="icon-chevron-left" /> SUBMIT
+		</button>
+	</p>
+</div>       
+
+
+</div>
+</div>
+</form>
+</body>

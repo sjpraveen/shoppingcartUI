@@ -1,0 +1,308 @@
+<p class="text-info text-center">
+	Thanks for shopping at the Product Store.<br />
+
+</p>
+
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span8">
+
+			<!-- items -->
+			<table class="table table-bordered">
+
+				<!-- header -->
+				<tr class="well">
+					<td><b>Item</b></td>
+					<td class="tdCenter"><b>Quantity</b></td>
+					<td class="tdRight"><b>Price</b></td>
+					<td />
+				</tr>
+
+				<!-- empty cart message -->
+				<tr ng-hide="cart.getTotalCount() > 0" >
+					<td class="tdCenter" colspan="4">
+						Your cart is empty.
+					</td>
+				</tr>
+
+				<!-- cart items -->
+				<tr ng-repeat="item in cart.items | orderBy:'name'">
+					<td>{{item.name}}</td>
+					<td class="tdCenter">
+						<div class="input-append">
+							<!-- use type=tel instead of  to prevent spinners -->
+							<input
+							class="span3 text-center" type="tel" 
+							ng-model="item.quantity" 
+							ng-change="cart.saveItems()" />
+							<button 
+							class="btn btn-success" type="button" 
+							ng-disabled="item.quantity >= 1000"
+							ng-click="cart.addItem(item.sku, item.name, item.price, +1)">+</button>
+							<button 
+							class="btn btn-inverse" type="button" 
+							ng-disabled="item.quantity <= 0"
+							ng-click="cart.addItem(item.sku, item.name, item.price, -1)">-</button>
+						</div>
+					</td>
+					<td class="tdRight">{{item.price * item.quantity | currency}}</td>
+					<td class="tdCenter" title="remove from cart">
+						<a href="" ng-click="cart.addItem(item.sku, item.name, item.price, -10000000)" >
+							<i class="icon-remove" />
+						</a>
+					</td>
+				</tr>
+
+				<!-- footer -->
+				<tr class="well">
+					<td><b>Total</b></td>
+					<td class="tdCenter"><b>{{cart.getTotalCount()}}</b></td>
+					<td class="tdRight"><b>{{cart.getTotalPrice() | currency}}</b></td>
+					<td />
+				</tr>
+			</table>
+		</div>
+
+		<!-- buttons -->
+		<div class="span4">
+			<p class="text-info">
+				<button 
+				class="btn btn-block" 
+				onclick="window.location.href='#!'">
+				<i class="icon-chevron-left" /> back to store
+			</button>
+			<button 
+			class="btn btn-block btn-danger" 
+			ng-click="cart.clearItems()" 
+			ng-disabled="cart.getTotalCount() < 1" >
+			<i class="icon-trash icon-white" /> clear cart
+		</button>
+	</p>
+
+	<br /><br />
+	   <!--     <p class="text-info">
+				<button
+					class="btn btn-block btn-primary"
+					ng-click="cart.checkout('PayPal')"
+					ng-disabled="cart.getTotalCount() < 1">
+					<i class="icon-ok icon-white" /> check out using PayPal
+				</button>
+			   
+			</p>-->
+			<!-- Stripe needs a form to post to -->
+		 <!--       <form class="form-stripe"></form>
+
+			<br /><br />
+
+			<p class="text-info">
+				<button 
+					class="btn btn-block btn-link"
+					ng-click="cart.checkout('PayPal')"
+					ng-disabled="cart.getTotalCount() < 1" >
+					<img src="https://www.paypal.com/en_US/i/btn/btn_xpressCheckout.gif" alt="checkout PayPal"/>
+				</button>    
+				  
+			</p>--> 
+		</div>
+
+		<div class="span8" ng-hide="cart.getTotalCount() <= 0">
+			<div class="jumbotron">
+				<!-- User Row 1 -->
+				<legend class="col-md-12 text-center ">Shipping Address</legend>
+				<div class="row">
+					<div class=" form-group col-md-4" >
+						<label>First Name <span class="required">*</span> </label>
+
+						<div>
+							<input type="text" class="form-control" name="first-name" ng-model="main.firstname"  id="first-name" aria.required="true"  required="true">
+							<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+						</div> 
+					<!--	<div class="messages" ng-messages="cartForm.firstname.$error" ng-if="ccartForm.firstname.$touched">
+						<p ng-message="required"> First Name is required</p>
+
+						</div>-->	 
+					</div>
+					<div class=" form-group col-md-4">
+						<label>Middle Name </label>
+
+						<div>
+							<input type="text" class="form-control" name="middle-name" id="middle-name" placeholder="Middle name" class="input-xlarge" required="true">
+						</div>  
+					</div>
+					<div class=" form-group col-md-4">
+						<label>Last Name <span class="required">*</span> </label>
+
+						<div>
+							<input type="text" class="form-control" name="last-name" id="last-name" placeholder="Last name" class="input-xlarge" required="true">
+							<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+						</div>  
+					</div>
+
+				</div>
+				<div class="row">
+					<div class=" form-group col-md-4">
+						<label>Email <span class="required">*</span> </label>
+
+						<div>
+							<input type="text" class="form-control" name="email" id="email" placeholder="Email Address" class="input-xlarge" required="true">
+							<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+						</div>  
+					</div>
+					<div class=" form-group col-md-4">
+						<label>Address Line 1 <span class="required">*</span> </label>
+
+						<div>
+							<input type="text" class="form-control" name="addessline1" id="addessline1" placeholder="addessline1" class="input-xlarge" required="true">
+							<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+						</div>  
+					</div>
+					<div class=" form-group col-md-4">
+						<label>Address Line 1 </label>
+
+						<div>
+							<input type="text" class="form-control" name="addessline2" id="addessline2" placeholder="Addessline 2" class="input-xlarge" required="true">
+						</div>  
+					</div>
+
+
+				</div>
+				<div class="row">
+					<div class=" form-group col-md-4">
+						<label>City <span class="required">*</span> </label>
+
+						<div>
+							<input type="text" class="form-control" name="city" id="city" placeholder="City" class="input-xlarge" required="true">
+							<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+						</div>  
+					</div>
+					<div class=" form-group col-md-4">
+						<label> Country<span class="required">*</span> </label>
+						<select id="country" class="form-control" name="country" required="true" placeholder="Country"> 
+							<option value="select">Select</option>
+							<option value="CAN">Canada</option>
+							<option value="US">United States</option>               
+
+						</select>
+
+					</div>
+					<div class=" form-group col-md-4">
+						<label>Province/State<span class="required">*</span> </label>
+
+						<div>
+							<input type="text" class="form-control" name="state" id="state" placeholder="state" class="input-xlarge" required="true">
+							<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+						</div>  
+					</div>
+
+
+				</div>
+				<div class="row">
+					<div class=" form-group col-md-4">
+						<label>ZipCode <span class="required">*</span> </label>
+
+						<div>
+							<input type="text" class="form-control" name="zipcode" id="zipcode" placeholder="zipcode" class="input-xlarge" required="true">
+							<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+						</div>  
+					</div>              
+
+				</div>
+			</div>
+
+		</div>
+		<div class="span8" ng-hide="cart.getTotalCount() <= 0">
+			<div class="jumbotron">
+				<!-- User Row 1 -->
+				<legend class="col-md-12 text-center">Payment Details</legend>
+
+				<div class="row">
+					<div class=" form-group col-md-4">
+						<label>Card Holder's Name<span class="required">*</span> </label>
+
+						<div>
+							<input type="text" class="form-control"  name="cardholdersname" id="cardholdersname" placeholder="Card Holder's Name" class="input-xlarge" required="true">
+							<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+						</div>  
+					</div>
+				</div>
+
+				<div class="row">
+					<div class=" form-group col-md-4">
+						<label>Card Number<span class="required">*</span> </label>
+
+						<div>
+							<input type="text" class="form-control" name="cardnumber" id="cardnumber" placeholder="Card Number" class="input-xlarge" required="true" maxlength="16">
+							<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+						</div> 
+
+					</div>
+				</div>   
+
+				<div class="row">
+
+					<div class=" form-group col-md-4">
+						<label>Year<span class="required">*</span> </label>
+						<select id="year" class="form-control" name="year" required="true" placeholder="Select"> 
+							<option value="select">Select</option>
+							<option value="2017">2017</option>
+							<option value="2018">2018</option>
+							<option value="2019">2019</option>
+							<option value="2020">2020</option>  
+							<option value="2021">2021</option>
+							<option value="2022">2022</option>  
+							<option value="2023">2023</option>
+							<option value="2024">2024</option>  
+							<option value="2025">2025</option>
+							<option value="2026">2026</option>                  
+
+						</select>
+
+					</div>
+					<div class=" form-group col-md-4">        
+						<label>Month<span class="required">*</span> </label>
+						<select id="month" class="form-control" name="month" required="true" placeholder="Select"> 
+							<option value="select">Select</option>
+							<option value="JAN">January</option>
+							<option value="FEB">Feburary</option>
+							<option value="MAR">March</option>
+							<option value="APR">April</option>  
+							<option value="MAY">May</option>
+							<option value="JUN">June</option>   
+							<option value="JUL">July</option>
+							<option value="AUG">Auguast</option>    
+							<option value="SEPT">September</option>
+							<option value="OCT">October</option>
+							<option value="NOV">November</option>
+							<option value="DEC">December</option>
+						</select>
+
+					</div>
+				</div>
+				<div class="row">
+					<div class=" form-group col-md-4">
+						<label>CVV<span class="required">*</span> </label>
+
+						<div>
+							<input type="text" class="form-control" name="cvv" id="cvv" placeholder="CVV" class="input-xlarge" required="true" maxlength="3">
+							<span class="glyphicon glyphicon-remove form-control-feedback"></span>
+						</div> 
+
+					</div>
+				</div>  
+			</div> 
+
+		</div>  
+
+		<div class="span4" ng-hide="cart.getTotalCount() < 1 ">
+			<p class="text-info">
+				<button 
+				class="btn btn-block" 
+				onclick="window.location.href='#!'">
+				<i class="icon-chevron-left" /> SUBMIT
+			</button>
+		</p>
+	</div>       
+
+
+</div>
+</div>

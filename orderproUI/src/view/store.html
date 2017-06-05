@@ -1,0 +1,79 @@
+<p class="text-info text-center">
+  Welcome to the Shopping page<br />
+  Please select the products you want ….<br /></p>
+<p>
+ 
+<div class="container">
+<table class="table table-bordered">
+ <tr class="well">
+        <td class="tdRight" colspan="4" >
+            <a href="index.html#/cart" title="go to shopping cart" ng-disabled="cart.getTotalCount() < 1">
+                <i class="icon-shopping-cart" />
+                <b>{{cart.getTotalCount()}}</b> items, <b>{{cart.getTotalPrice() | currency}}</b>
+            </a>
+        </td>
+    </tr>
+    <tr class="well">
+       <td class="tdLeft" colspan="4">
+            <button 
+              class="btn btn-success" type="button" 
+                            ng-disabled="cart.getTotalCount() < 1"
+                            ng-click="cart.clearItems()">Clear Cart</button>
+                          
+            <button  class="btn btn-success" type="button" 
+                            ng-disabled="cart.getTotalCount() < 1"
+                            onclick="window.location.href='#!/cart'">NEXT</button>
+
+        </td>
+        
+    
+        
+    </tr>
+    <tr ng-repeat="product in store.products | orderBy:'name' | filter:search" >
+        <td>
+            <a href="#/products/{{product.sku}}"><b>{{product.name}}</b></a><br />
+            {{product.description}}
+        </td>
+        <td class="tdRight">
+            {{product.price | currency}}
+        </td>
+        <td class="tdCenter">
+            <a href="" ng-click="cart.addItem(product.sku, product.name, product.price, 1)">
+                add to cart
+            </a>
+          <!--  <br>
+            <a  ng-if="cart.isItemExist(product.sku)" href="" ng-click="cart.removeItem(product.sku)">
+                remove from cart
+            </a>-->
+        </td>
+    </tr>
+    <tr class="well">
+        <td class="tdRight" colspan="4">
+            <a href="index.html#/cart" title="go to shopping cart" ng-disabled="cart.getTotalCount() < 1">
+                <i class="icon-shopping-cart" />
+                <b>{{cart.getTotalCount()}}</b> items, <b>{{cart.getTotalPrice() | currency}}</b>
+            </a>
+        </td>
+    </tr>
+
+      <tr class="well">
+       <td class="tdLeft" colspan="4">
+            <button 
+              class="btn btn-success" type="button" 
+                            ng-disabled="cart.getTotalCount() < 1"
+                            ng-click="cart.clearItems()">Clear Cart</button>
+
+            <button 
+              class="btn btn-success" type="button" 
+                            ng-disabled="cart.getTotalCount() < 1"
+                            onclick="window.location.href='#!/cart'">NEXT</button>
+        </td>
+        
+    
+        
+    </tr>
+</table>
+
+
+         
+</div>
